@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voting Suara</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 40px;
+    }
+    .card-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .card {
+      background-color: #222;
+      color: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 150px;
+      transition: transform 0.2s;
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+    .btn {
+      background-color: #fff;
+      color: #222;
+      border: none;
+      padding: 10px 15px;
+      margin-top: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn:hover {
+      background-color: #ddd;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .card.animate {
+      animation: pulse 0.4s;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .reset-btn {
+      margin-top: 40px;
+      background-color: crimson;
+      color: white;
+    }
+    .reset-btn:hover {
+      background-color: #a00;
+    }
+  </style>
+</head>
+<body>
+  <h1>Voting Pemilihan</h1>
+  <p><small>Gunakan keyboard: 1, 2, 3 untuk vote — 0 untuk reset</small></p>
+  <div class="card-container">
+    <div class="card" id="calon1">
+      <img src="osis.png" alt="calon 1">
+      <h3>calon 1</h3>
+      <p>suara: <span id="suara1">0</span></p>
+      <button class="btn" onclick="vote(1)">Pilih</button>
+    </div>
+    <div class="card" id="calon2">
+      <img src="osis.png" alt="calon 2">
+      <h3>calon 2</h3>
+      <p>suara: <span id="suara2">0</span></p>
+      <button class="btn" onclick="vote(2)">Pilih</button>
+    </div>
+    <div class="card" id="calon3">
+      <img src="osis.png" alt="calon 3">
+      <h3>calon 3</h3>
+      <p>suara: <span id="suara3">0</span></p>
+      <button class="btn" onclick="vote(3)">Pilih</button>
+    </div>
+  </div>
+  <button class="btn reset-btn" onclick="resetSuara()">Reset Suara</button>
+
+  <script>
+    let suara = [
+      parseInt(localStorage.getItem("suara1")) || 0,
+      parseInt(localStorage.getItem("suara2")) || 0,
+      parseInt(localStorage.getItem("suara3")) || 0
+    ];
+
+    function updateTampilan() {
+      document.getElementById("suara1").textContent = suara[0];
+      document.getElementById("suara2").textContent = suara[1];
+      document.getElementById("suara3").textContent = suara[2];
+    }
+
+    function vote(nomor) {
+      suara[nomor - 1]++;
+      localStorage.setItem(`suara${nomor}`, suara[nomor - 1]);
+      updateTampilan();
+      animateCard(nomor);
+    }
+
+    function animateCard(nomor) {
+      const card = document.getElementById(`calon${nomor}`);
+      card.classList.add("animate");
+      setTimeout(() => card.classList.remove("animate"), 400);
+    }
+
+    function resetSuara() {
+      if (confirm("Yakin mau reset semua suara?")) {
+        suara = [0, 0, 0];
+        localStorage.setItem("suara1", 0);
+        localStorage.setItem("suara2", 0);
+        localStorage.setItem("suara3", 0);
+        updateTampilan();
+      }
+    }
+
+    // Kontrol keyboard
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "1") vote(1);
+      if (e.key === "2") vote(2);
+      if (e.key === "3") vote(3);
+      if (e.key === "0") resetSuara();
+    });
+
+    updateTampilan();
+  </script>
+</body>
+</html>
